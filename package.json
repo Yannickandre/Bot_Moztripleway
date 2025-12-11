@@ -1,0 +1,14 @@
+{
+  "name": "telegram-bot",
+  "version": "1.0.0",
+  "description": "Bot Telegram com validação e inline buttons",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "node-telegram-bot-api": "^0.61.0"
+  }
+}
