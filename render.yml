@@ -1,0 +1,35 @@
+# Define a versão da especificação do Render
+# Este arquivo deve ser colocado na raiz do seu repositório
+version: v1
+
+# Lista de serviços que você quer que o Render gerencie
+services:
+  - type: worker 
+    # 'worker' é o tipo de serviço que roda processos contínuos em segundo plano (ideal para bots 24/7)
+    name: Bot M0Z Triple Way # Substitua por um nome único para o seu bot (ex: MeuBotDeVendas)
+    env: node
+    
+    # O comando que o Render deve usar para instalar as dependências
+    buildCommand: npm install
+    
+    # O comando que o Render deve rodar para iniciar o bot
+    startCommand: node bot.js
+    
+    # O ramo (branch) do Git que será usado para o deploy
+    # Certifique-se de que este é o branch principal do seu código (geralmente main ou master)
+    repo: https://github.com/Yannickandre/Bot_Moztripleway # SUBSTITUA
+    branch: main
+    
+    # O tamanho da instância (Free tier)
+    plan: free 
+    
+    # Variáveis de Ambiente (Chaves Secretas)
+    # ATENÇÃO: Nunca coloque seu token diretamente aqui. Use Variáveis de Ambiente.
+    envVars:
+      - key: MY_TELEGRAM_BOT # O nome da variável de ambiente no seu código
+        sync: false # Garante que o valor não será mostrado publicamente
+        # O valor real deste token deve ser inserido DENTRO da interface do Render (Secrets)
+        
+    # Desabilita o auto-deploy para o plano gratuito 
+    # (Pode ser necessário configurar o auto-deploy na UI do Render se usar o plano Free)
+    # autoDeploy: true
