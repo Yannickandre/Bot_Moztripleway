@@ -1,0 +1,263 @@
+{
+  "main": {
+    "message": "📌 *Bem vindo ao bot oficial M0Z Triple Way 😜*\nEscolhe uma opção:",
+    "options": {
+      "info": { "label": "❓ Informação ❔", "next": "info" },
+      "arquivo": { "label": "📁 Arquivos", "next": "arquivo" }
+    }
+  },
+
+  "info": {
+    "message": "ℹ *Bot M0Z Triple Way 😜*\nCriado para auxiliar os inscritos a obter recursos premium.\nCriado por Yannick André.",
+    "options": {
+      "voltarMain": { "label": "⬅ Voltar", "next": "main" }
+    }
+  },
+
+  "arquivo": {
+    "message": "📂 *Arquivos*\nQue VPN tu queres utilizar?:",
+    "options": {
+      "httpcustom": { "label": "Http Custom", "next": "httpcustom" },
+      "httpinjector": { "label": "Http Injector", "next": "httpinjector" },
+      "netmod": { "label": "Netmod VPN", "next": "netmod" },
+      "voltarMain": { "label": "⬅ Voltar", "next": "main" }
+    }
+  },
+
+  "httpcustom": {
+    "message": "🌐 *VPN rápido e de baixa latência (Custom)*",
+    "options": {
+      "mymuzecustom": { "label": "MyMuze 🎵", "next": "mymuzecustom" },
+      "wftcustom": { "label": "WFT 🛩️", "next": "wftcustom" },
+      "200mbcustom": { "label": "200MB/dia ⚡", "next": "200mbcustom" },
+      "unlimitedcustom": { "label": "Vodacom unlimited", "next": "unlimitedcustom" },
+      "voltar": { "label": "⬅ Voltar", "next": "arquivo" }
+    }
+  },
+
+  "httpinjector": {
+    "message": "💉 *VPN rápido e leve (Injector)*",
+    "options": {
+      "mymuzeinject": { "label": "MyMuze 🎵", "next": "mymuzeinject" },
+      "wftinject": { "label": "WFT 🛩️", "next": "wftinject" },
+      "200mbinject": { "label": "200MB/dia ⚡", "next": "200mbinject" },
+      "unlimitedinject": { "label": "Vodacom unlimited", "next": "unlimitedinject" },
+      "voltar": { "label": "⬅ Voltar", "next": "arquivo" }
+    }
+  },
+
+  "netmod": {
+    "message": "💻 *VPN ultra rápido (Netmod)*",
+    "options": {
+      "mymuzenetmod": { "label": "MyMuze 🎵", "next": "mymuzenetmod" },
+      "wftnetmod": { "label": "WFT 🛩️", "next": "wftnetmod" },
+      "200mbnetmod": { "label": "200MB/day", "next": "200mbnetmod" },
+      "unlimitednetmod": { "label": "Vodacom unlimited", "next": "unlimitednetmod" },
+      "voltar": { "label": "⬅ Voltar", "next": "arquivo" }
+    }
+  },
+
+  "mymuzecustom": {
+    "message": "3GB/dia MyMuze 🎵. Digite *162# opc 7 -> 2.",
+    "options": {
+      "paymycustom": { "label": "💳 Pagar arquivo", "next": "paymycustom" },
+      "voltar": { "label": "⬅ Voltar", "next": "httpcustom" }
+    }
+  },
+
+  "wftcustom": {
+    "message": "Necessário megas de Social (WFT).",
+    "options": {
+      "paywftcustom": { "label": "💳 Pagar arquivo", "next": "paywftcustom" },
+      "voltar": { "label": "⬅ Voltar", "next": "httpcustom" }
+    }
+  },
+
+  "200mbcustom": {
+    "message": "Limite de 200MB/dia. ⚠️ SNI parcialmente bloqueada.",
+    "options": {
+      "pay200custom": { "label": "💳 Pagar arquivo", "next": "pay200custom" },
+      "voltar": { "label": "⬅ Voltar", "next": "httpcustom" }
+    }
+  },
+
+  "unlimitedcustom": {
+    "message": "Ilimitado s/ pacote. ⚠️ Parcialmente bloqueado.",
+    "options": {
+      "payunlimitedcustom": { "label": "💳 Pagar arquivo", "next": "payunlimitedcustom" },
+      "voltar": { "label": "⬅ Voltar", "next": "httpcustom" }
+    }
+  },
+
+  "mymuzeinject": {
+    "message": "3GB/dia MyMuze 🎵. Digite *162# opc 7 -> 2.",
+    "options": {
+      "paymyinject": { "label": "💳 Pagar arquivo", "next": "paymyinject" },
+      "voltar": { "label": "⬅ Voltar", "next": "httpinjector" }
+    }
+  },
+
+  "wftinject": {
+    "message": "Necessário megas de Social (WFT).",
+    "options": {
+      "paywftinject": { "label": "💳 Pagar arquivo", "next": "paywftinject" },
+      "voltar": { "label": "⬅ Voltar", "next": "httpinjector" }
+    }
+  },
+
+  "200mbinject": {
+    "message": "Limite de 200MB/dia. ⚠️ SNI parcialmente bloqueada.",
+    "options": {
+      "pay200inject": { "label": "💳 Pagar arquivo", "next": "pay200inject" },
+      "voltar": { "label": "⬅ Voltar", "next": "httpinjector" }
+    }
+  },
+
+  "unlimitedinject": {
+    "message": "Ilimitado s/ pacote. ⚠️ Parcialmente bloqueado.",
+    "options": {
+      "payunlimitedinject": { "label": "💳 Pagar arquivo", "next": "payunlimitedinject" },
+      "voltar": { "label": "⬅ Voltar", "next": "httpinjector" }
+    }
+  },
+
+  "mymuzenetmod": {
+    "message": "3GB/dia MyMuze 🎵. Digite *162# opc 7 -> 2.",
+    "options": {
+      "paymynetmod": { "label": "💳 Pagar arquivo", "next": "paymynetmod" },
+      "voltar": { "label": "⬅ Voltar", "next": "netmod" }
+    }
+  },
+
+  "wftnetmod": {
+    "message": "Necessário megas de Social (WFT).",
+    "options": {
+      "paywftnetmod": { "label": "💳 Pagar arquivo", "next": "paywftnetmod" },
+      "voltar": { "label": "⬅ Voltar", "next": "netmod" }
+    }
+  },
+
+  "200mbnetmod": {
+    "message": "Limite de 200MB/dia. ⚠️ SNI parcialmente bloqueada.",
+    "options": {
+      "pay200netmod": { "label": "💳 Pagar arquivo", "next": "pay200netmod" },
+      "voltar": { "label": "⬅ Voltar", "next": "netmod" }
+    }
+  },
+
+  "unlimitednetmod": {
+    "message": "Ilimitado s/ pacote. ⚠️ Parcialmente bloqueado.",
+    "options": {
+      "payunlimitednetmod": { "label": "💳 Pagar arquivo", "next": "payunlimitednetmod" },
+      "voltar": { "label": "⬅ Voltar", "next": "netmod" }
+    }
+  },
+
+  "paymycustom": {
+    "message": "📄 *Envio do comprovativo*\nSegue as regras e envia o comprovativo em *TEXTO*.\n\n(Aguardando mensagem...)",
+    "requiresTextValidation": true,
+    "fileToSend": "./arquivos/MyMuzeViP.hc",
+    "options": {
+      "voltar": { "label": "⬅ Voltar", "next": "mymuzecustom" }
+    }
+  },
+
+  "paywftcustom": {
+    "message": "📄 *Envio do comprovativo*\nSegue as regras e envia o comprovativo em *TEXTO*.",
+    "requiresTextValidation": true,
+    "fileToSend": "./arquivos/wftVIP.hc",
+    "options": {
+      "voltar": { "label": "⬅ Voltar", "next": "wftcustom" }
+    }
+  },
+
+  "pay200custom": {
+    "message": "📄 *Envio do comprovativo*\nSegue as regras e envia o comprovativo em *TEXTO*.",
+    "requiresTextValidation": true,
+    "fileToSend": "./arquivos/200VIP.hc",
+    "options": {
+      "voltar": { "label": "⬅ Voltar", "next": "200mbcustom" }
+    }
+  },
+
+  "payunlimitedcustom": {
+    "message": "875868157 celeste onelta/846430884 celeste onelta. Mande 5Mts para um desses números e depois mande a mensagem de confirmação abaixo",
+    "requiresTextValidation": true,
+    "fileToSend": "./arquivos/unlimitedVIP.hc",
+    "options": {
+      "voltar": { "label": "⬅ Voltar", "next": "unlimitedcustom" }
+    }
+  },
+
+  "paymyinject": {
+    "message": "875868157 celeste onelta/846430884 celeste onelta. Mande 5Mts para um desses números e depois mande a mensagem de confirmação abaixo",
+    "requiresTextValidation": true,
+    "fileToSend": "./arquivos/MyMuzeVIP.ehi",
+    "options": {
+      "voltar": { "label": "⬅ Voltar", "next": "mymuzeinject" }
+    }
+  },
+
+  "paywftinject": {
+    "message": "875868157 celeste onelta/846430884 celeste onelta. Mande 5Mts para um desses números e depois mande a mensagem de confirmação abaixo",
+    "requiresTextValidation": true,
+    "fileToSend": "./arquivos/wftVIP.ehi",
+    "options": {
+      "voltar": { "label": "⬅ Voltar", "next": "wftinject" }
+    }
+  },
+
+  "pay200inject": {
+    "message": "875868157 celeste onelta/846430884 celeste onelta. Mande 5Mts para um desses números e depois mande a mensagem de confirmação abaixo",
+    "requiresTextValidation": true,
+    "fileToSend": "./arquivos/200VIP.ehi",
+    "options": {
+      "voltar": { "label": "⬅ Voltar", "next": "200mbinject" }
+    }
+  },
+
+  "payunlimitedinject": {
+    "message": "875868157 celeste onelta/846430884 celeste onelta. Mande 5Mts para um desses números e depois mande a mensagem de confirmação abaixo",
+    "requiresTextValidation": true,
+    "fileToSend": "./arquivos/unlimitedVIP.ehi",
+    "options": {
+      "voltar": { "label": "⬅ Voltar", "next": "unlimitedinject" }
+    }
+  },
+
+  "paymynetmod": {
+    "message": "875868157 celeste onelta/846430884 celeste onelta. Mande 5Mts para um desses números e depois mande a mensagem de confirmação abaixo",
+    "requiresTextValidation": true,
+    "fileToSend": "./arquivos/MyMuzeVIP.nm",
+    "options": {
+      "voltar": { "label": "⬅ Voltar", "next": "mymuzenetmod" }
+    }
+  },
+
+  "paywftnetmod": {
+    "message": "875868157 celeste onelta/846430884 celeste onelta. Mande 5Mts para um desses números e depois mande a mensagem de confirmação abaixo",
+    "requiresTextValidation": true,
+    "fileToSend": "/arquivos/wftVIP.nm",
+    "options": {
+      "voltar": { "label": "⬅ Voltar", "next": "wftnetmod" }
+    }
+  },
+
+  "pay200netmod": {
+    "message": "875868157 celeste onelta/846430884 celeste onelta. Mande 5Mts para um desses números e depois mande a mensagem de confirmação abaixo",
+    "requiresTextValidation": true,
+    "fileToSend": "./arquivos/200VIP.nm",
+    "options": {
+      "voltar": { "label": "⬅ Voltar", "next": "200mbnetmod" }
+    }
+  },
+
+  "payunlimitednetmod": {
+    "message": "875868157 celeste onelta/846430884 celeste onelta. Mande 5Mts para um desses números e depois mande a mensagem de confirmação abaixo",
+    "requiresTextValidation": true,
+    "fileToSend": "/arquivos/unlimitedVIP.nm",
+    "options": {
+      "voltar": { "label": "⬅ Voltar", "next": "unlimitednetmod" }
+    }
+  }
+}
