@@ -68,14 +68,16 @@ function sendMenu(chatId, menuKey) {
     });
   }
 
-  if (!menu.requiresTextValidation && !menu.requiresPhoto) {
-    userFlow.delete(chatId);
-  }
-
   bot.sendMessage(chatId, menu.message, {
     parse_mode: "Markdown",
     reply_markup: { inline_keyboard: buttons }
   }).catch(console.error);
+
+  if (menu.requiresTextValidation || menu.requiresPhoto) {
+    userFlow.set(chatId, menuKey);
+  } else {
+    userFlow.delete(chatId);
+  }
 }
 
 // ===== /start =====
@@ -103,16 +105,11 @@ bot.on("callback_query", q => {
     });
   }
 
-  bot.editMessageText(menu.message, {
-    chat_id: chatId,
-    message_id: q.message.message_id,
+  // Envia nova mensagem (chat contínuo)
+  bot.sendMessage(chatId, menu.message, {
     parse_mode: "Markdown",
     reply_markup: { inline_keyboard: buttons }
-  }).catch(err => {
-    if (!err.response?.body?.description?.includes("message is not modified")) {
-      console.error(err);
-    }
-  });
+  }).catch(console.error);
 
   if (menu.requiresTextValidation || menu.requiresPhoto) {
     userFlow.set(chatId, action);
