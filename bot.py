@@ -28,11 +28,19 @@ Se encontrares algum erro, <a href='https://t.me/Yannickandre'>Reporte aqui</a>.
         [InlineKeyboardButton('📞 Contato', callback_data='contato')]
     ]
 
-    await update.message.reply_text(
-        text=texto,
-        reply_markup=InlineKeyboardMarkup(keyboard),
-        parse_mode='HTML'
-    )
+    # Tratar tanto mensagens quanto callback queries
+    if update.callback_query:
+        await update.callback_query.message.reply_text(
+            text=texto,
+            reply_markup=InlineKeyboardMarkup(keyboard),
+            parse_mode='HTML'
+        )
+    else:
+        await update.message.reply_text(
+            text=texto,
+            reply_markup=InlineKeyboardMarkup(keyboard),
+            parse_mode='HTML'
+        )
 
 # Comprar arquivo
 async def comprar_arquivo(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -48,7 +56,7 @@ Tenho arquivos VIP para:
 • HTTP Injector  
 • OpenTunnel  
 
-Os arquivos são atualizados todos os sábados, ou seja, se tu comprares no sábado, terá validade de 7 dias, se tu comprares na quinta-feira, terá validade de 2 dias, assim socessivamente
+Os arquivos são atualizados todos os sábados, ou seja, se tu comprares no sábado, terá validade de 7 dias, se tu comprares na quinta-feira, terá validade de 2 dias, assim sucessivamente.
 
 Preço: 27 MZN  
 Validade: depende do dia da compra.
@@ -69,7 +77,7 @@ Escolha o VPN desejado:''',
     )
 
 # Escolher VPN
-async def escolher_vpn(update, context):
+async def escolher_vpn(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
@@ -99,7 +107,7 @@ async def receber_texto_usuario(update: Update, context: ContextTypes.DEFAULT_TY
         padrao_codigo = re.search(r'\b[a-z0-9]{10}\b', texto_de_confirmacao)
         id_transacao = padrao_codigo.group(0) if padrao_codigo else "".join(texto_de_confirmacao.split())
 
-        FICHEIRO_COMPROVATIVOS = "comprovativos.txt"
+        FICHEIRO_COMPROVATIVOS = "comprovativos.db"
 
         # Verificar duplicados
         if os.path.exists(FICHEIRO_COMPROVATIVOS):
@@ -114,7 +122,9 @@ async def receber_texto_usuario(update: Update, context: ContextTypes.DEFAULT_TY
             f.write(id_transacao + "\n")
 
         # Enviar arquivos
-        pasta = 'arquivos/'
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+        pasta = os.path.join(BASE_DIR, "arquivos")
         if not os.path.exists(pasta):
             await update.message.reply_text("A pasta de arquivos não foi encontrada. Contacte o ADM, para obter suporte.")
             return ConversationHandler.END
@@ -131,12 +141,15 @@ async def receber_texto_usuario(update: Update, context: ContextTypes.DEFAULT_TY
         for nome in os.listdir(pasta):
             caminho = os.path.join(pasta, nome)
             if os.path.isfile(caminho) and nome.lower().endswith(formato):
-                await update.message.reply_document(FSInputFile(caminho))
-                arquivos_enviados += 1
-                await asyncio.sleep(1)
+                try:
+                    await update.message.reply_document(FSInputFile(caminho))
+                    arquivos_enviados += 1
+                    await asyncio.sleep(0.5)  # Reduzir delay entre arquivos
+                except Exception as e:
+                    logger.error(f"Erro ao enviar arquivo {nome}: {e}")
 
         if arquivos_enviados == 0:
-            await update.message.reply_text("Nenhum arquivo encontrado. Por favor Contacte o ADM para obter suporte.")
+            await update.message.reply_text("Nenhum arquivo encontrado. Por favor contacte o ADM para obter suporte.")
         else:
             await update.message.reply_text("Pronto! Todos os arquivos foram enviados, faça bom proveito.")
 
@@ -148,44 +161,70 @@ async def receber_texto_usuario(update: Update, context: ContextTypes.DEFAULT_TY
 
 # Ajuda
 async def ajuda(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(
+    query = update.callback_query
+    await query.answer()
+    
+    await query.message.reply_text(
         text='''Bem-vindo ao setor de ajuda!
-Se tu tens alguma dúvida, ou problema podes aderir aos nossos grupos e obter suporte
+Se tu tens alguma dúvida, ou problema podes aderir aos nossos grupos e obter suporte.
 
 Grupos de suporte:
 • <a href="https://chat.whatsapp.com/LaAjlbB8umaFq251VplJ6R">WhatsApp</a>
 • <a href="https://t.me/chatmoztripleway">Telegram</a>
 • <a href="https://discord.gg/8YvBndtVB">Discord</a>''',
-        parse_mode='HTML'
-    )
+        if update.callback_query:
+            await update.callback_query.answer()
+            await update.callback_query.message.reply_text(
+                texto,
+                parse_mode='HTML'
+            )
+        else:
+            await update.message.reply_text(
+                texto,
+                parse_mode='HTML'
+            )
 
-# Contato (corrigido)
+# Contato
 async def contato(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    texto = '''Como já foi dito antes, este é um bot programado manualmente, então pode ter alguns erros
-    Se encontrares algum erro ou tiveres sugestões, contacta-me:
+    query = update.callback_query
+    await query.answer()
+    
+    texto = '''Como já foi dito antes, este é um bot programado manualmente, então pode ter alguns erros.
+Se encontrares algum erro ou tiveres sugestões, contacta-me:
 
 • <a href="https://www.facebook.com/share/1DXbZn1mi7/">Facebook</a>
 • <a href="https://www.instagram.com/yanni.ckandre?igsh=NWZqNHViNXM2bzM5">Instagram</a>
 
-Essas são as maneiras mais práticas de me contatar, pois eu certamente verei tua mensagem'''
+Essas são as maneiras mais práticas de me contatar, pois eu certamente verei tua mensagem.'''
 
-    await update.message.reply_text(texto, parse_mode='HTML')
+    if update.callback_query:
+        await update.callback_query.answer()
+
+        await update.callback_query.message.reply_text(
+            texto,
+            parse_mode='HTML'
+        )
+
+    else:
+        await update.message.reply_text(
+            texto,
+            parse_mode='HTML'
+        )
 
 # Cancelar
-async def cancelar_operacao(update, context):
+async def cancelar_operacao(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     await query.message.reply_text("Compra cancelada.")
     return ConversationHandler.END
 
 # Botões
-async def interacao_botoes(update, context):
+async def interacao_botoes(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
-    if query.data == "start":
-        await start(update, context)
-    elif query.data == "comprar_arquivo":
+    
+    if query.data == "comprar_arquivo":
         await comprar_arquivo(update, context)
     elif query.data == "ajuda":
         await ajuda(update, context)
@@ -201,15 +240,7 @@ def main():
 
     application = Application.builder().token(TOKEN).build()
 
-    # Comandos
-    application.add_handler(CommandHandler('start', start))
-    application.add_handler(CommandHandler('ajuda', ajuda))
-    application.add_handler(CommandHandler('contato', contato))
-
-    # Botões
-    application.add_handler(CallbackQueryHandler(interacao_botoes))
-
-    # Conversação
+    # Conversação (DEVE vir ANTES dos handlers gerais)
     conv_handler = ConversationHandler(
         entry_points=[CallbackQueryHandler(escolher_vpn, pattern='^(http_custom|http_injector|open_tunnel)$')],
         states={
@@ -221,6 +252,14 @@ def main():
     )
 
     application.add_handler(conv_handler)
+
+    # Comandos
+    application.add_handler(CommandHandler('start', start))
+    application.add_handler(CommandHandler('ajuda', ajuda))
+    application.add_handler(CommandHandler('contato', contato))
+
+    # Botões (DEVE vir DEPOIS do ConversationHandler)
+    application.add_handler(CallbackQueryHandler(interacao_botoes))
 
     logger.info("Bot iniciado com sucesso.")
     application.run_polling()
