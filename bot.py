@@ -236,39 +236,29 @@ async def interacao_botoes(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # MAIN
 def main():
     TOKEN = os.environ.get("MEU_TOKEN_SECRETO")
+    WEBHOOK_URL = os.environ.get("WEBHOOK_URL")
+
     if not TOKEN:
-        logger.error("Erro: Token não encontrado.")
+        logger.error("Token não encontrado.")
+        return
+
+    if not WEBHOOK_URL:
+        logger.error("WEBHOOK_URL não definida.")
         return
 
     application = Application.builder().token(TOKEN).build()
 
-    # Conversação (DEVE vir ANTES dos handlers gerais)
-    conv_handler = ConversationHandler(
-        entry_points=[CallbackQueryHandler(escolher_vpn, pattern='^(http_custom|http_injector|open_tunnel)$')],
-        states={
-            ESPERANDO_COMPROVATIVO: [
-                MessageHandler(filters.TEXT & ~filters.COMMAND, receber_texto_usuario)
-            ]
-        },
-        fallbacks=[CallbackQueryHandler(cancelar_operacao, pattern='^cancelar_fluxo$')]
-    )
-
+    # handlers
     application.add_handler(conv_handler)
-
-    # Comandos
     application.add_handler(CommandHandler('start', start))
     application.add_handler(CommandHandler('ajuda', ajuda))
     application.add_handler(CommandHandler('contato', contato))
-
-    # Botões (DEVE vir DEPOIS do ConversationHandler)
     application.add_handler(CallbackQueryHandler(interacao_botoes))
 
     logger.info("Bot iniciado com sucesso.")
-    application.run_webhook(
-    listen="0.0.0.0",
-    port=int(os.environ.get("PORT", 8080)),
-    webhook_url="https://worker-production-c71a.up.railway.app/webhook",
-)
 
-if __name__ == '__main__':
-    main()
+    application.run_webhook(
+        listen="0.0.0.0",
+        port=int(os.environ.get("PORT", 8080)),
+        webhook_url=f"{WEBHOOK_URL}/webhook",
+    )
