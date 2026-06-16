@@ -1,7 +1,7 @@
 import os
 import re
 import logging
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, FSInputFile
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, filters, ContextTypes, ConversationHandler, MessageHandler
 import asyncio
 
@@ -142,11 +142,13 @@ async def receber_texto_usuario(update: Update, context: ContextTypes.DEFAULT_TY
             caminho = os.path.join(pasta, nome)
             if os.path.isfile(caminho) and nome.lower().endswith(formato):
                 try:
-                    await update.message.reply_document(FSInputFile(caminho))
+                    with open(caminho, 'rb') as f:
+                        await update.message.reply_document(document=f, 
+                        filename=nome)
                     arquivos_enviados += 1
                     await asyncio.sleep(0.5)  # Reduzir delay entre arquivos
                 except Exception as e:
-                    logger.error(f"Erro ao enviar arquivo {nome}: {e}")
+                    logger.exception(f"Erro ao enviar arquivo {nome}: {e}")
 
         if arquivos_enviados == 0:
             await update.message.reply_text("Nenhum arquivo encontrado. Por favor contacte o ADM para obter suporte.")
