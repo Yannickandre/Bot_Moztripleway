@@ -265,11 +265,10 @@ def main():
 
     logger.info("Bot iniciado com sucesso.")
     application.run_webhook(
-        listen="0.0.0.0",
-        port=PORT,
-        url_path=TOKEN,
-        webhook_url=https://worker-production-c71a.up.railway.app /{TOKEN}"
-    )
+    listen="0.0.0.0",
+    port=int(os.environ.get("PORT", 8080)),
+    webhook_url="https://worker-production-c71a.up.railway.app/webhook",
+)
 
 if __name__ == '__main__':
     main()
