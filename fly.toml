@@ -1,0 +1,8 @@
+app = "Yannick-bot"
+
+[build]
+
+[env]
+
+[processes]
+  app = "python bot.py"
