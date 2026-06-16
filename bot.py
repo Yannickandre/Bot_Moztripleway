@@ -264,8 +264,7 @@ def main():
     application.add_handler(CallbackQueryHandler(interacao_botoes))
 
     logger.info("Bot iniciado com sucesso.")
-
-application.run_polling(drop_pending_updates=True)
+     application.run_polling(drop_pending_updates=True)
 
 if __name__ == '__main__':
     main()
