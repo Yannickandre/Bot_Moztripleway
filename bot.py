@@ -264,7 +264,12 @@ def main():
     application.add_handler(CallbackQueryHandler(interacao_botoes))
 
     logger.info("Bot iniciado com sucesso.")
-    application.run_polling(drop_pending_updates=True)
+    application.run_webhook(
+        listen="0.0.0.0",
+        port=PORT,
+        url_path=TOKEN,
+        webhook_url=https://worker-production-c71a.up.railway.app /{TOKEN}"
+    )
 
 if __name__ == '__main__':
     main()
