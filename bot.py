@@ -161,28 +161,28 @@ async def receber_texto_usuario(update: Update, context: ContextTypes.DEFAULT_TY
 
 # Ajuda
 async def ajuda(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    query = update.callback_query
-    await query.answer()
-    
-    await query.message.reply_text(
-        text='''Bem-vindo ao setor de ajuda!
+
+    texto = '''Bem-vindo ao setor de ajuda!
 Se tu tens alguma dúvida, ou problema podes aderir aos nossos grupos e obter suporte.
 
 Grupos de suporte:
 • <a href="https://chat.whatsapp.com/LaAjlbB8umaFq251VplJ6R">WhatsApp</a>
 • <a href="https://t.me/chatmoztripleway">Telegram</a>
-• <a href="https://discord.gg/8YvBndtVB">Discord</a>''',
-        if update.callback_query:
-            await update.callback_query.answer()
-            await update.callback_query.message.reply_text(
-                texto,
-                parse_mode='HTML'
-            )
-        else:
-            await update.message.reply_text(
-                texto,
-                parse_mode='HTML'
-            )
+• <a href="https://discord.gg/8YvBndtVB">Discord</a>'''
+
+    if update.callback_query:
+        await update.callback_query.answer()
+
+        await update.callback_query.message.reply_text(
+            texto,
+            parse_mode='HTML'
+        )
+
+    else:
+        await update.message.reply_text(
+            texto,
+            parse_mode='HTML'
+        )
 
 # Contato
 async def contato(update: Update, context: ContextTypes.DEFAULT_TYPE):
