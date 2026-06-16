@@ -248,7 +248,6 @@ def main():
 
     application = Application.builder().token(TOKEN).build()
 
-    # handlers
     application.add_handler(conv_handler)
     application.add_handler(CommandHandler('start', start))
     application.add_handler(CommandHandler('ajuda', ajuda))
@@ -256,9 +255,3 @@ def main():
     application.add_handler(CallbackQueryHandler(interacao_botoes))
 
     logger.info("Bot iniciado com sucesso.")
-
-    application.run_webhook(
-        listen="0.0.0.0",
-        port=int(os.environ.get("PORT", 8080)),
-        webhook_url=f"{WEBHOOK_URL}/webhook",
-    )
