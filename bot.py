@@ -42,6 +42,10 @@ Se encontrares algum erro, <a href='https://t.me/Yannickandre'>Reporte aqui</a>.
             parse_mode='HTML'
         )
 
+async def start(update, context):
+    await update.message.reply_text("Estou vivo!")
+
+
 # Comprar arquivo
 async def comprar_arquivo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
@@ -255,3 +259,9 @@ def main():
     application.add_handler(CallbackQueryHandler(interacao_botoes))
 
     logger.info("Bot iniciado com sucesso.")
+   
+   application.run_webhook(
+    listen="0.0.0.0",
+    port=int(os.environ.get("PORT", 8080)),
+    webhook_url=WEBHOOK_URL,
+)
