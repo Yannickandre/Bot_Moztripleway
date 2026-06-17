@@ -5,7 +5,7 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, filters, ContextTypes, ConversationHandler, MessageHandler
 import asyncio
 
-print('Bot iniciado' flush=True)
+print('Bot iniciado', flush=True)
 # Logs
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
