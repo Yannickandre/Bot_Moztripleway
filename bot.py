@@ -1,3 +1,5 @@
+print("ARQUIVO BOT.PY FOI EXECUTADO")
+1/0
 import os
 import re
 import logging
