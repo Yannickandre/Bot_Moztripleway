@@ -239,6 +239,7 @@ async def interacao_botoes(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # MAIN
 def main():
+    print('passo 1')
     TOKEN = os.environ.get("MEU_TOKEN_SECRETO")
     WEBHOOK_URL = os.environ.get("WEBHOOK_URL")
 
@@ -250,8 +251,9 @@ def main():
         logger.error("WEBHOOK_URL não definida.")
         return
 
+    print('passo 2')
     application = Application.builder().token(TOKEN).build()
-
+    print('passo 3')
     application.add_handler(conv_handler)
     application.add_handler(CommandHandler('start', start))
     application.add_handler(CommandHandler('ajuda', ajuda))
@@ -265,6 +267,3 @@ def main():
     port=int(os.environ.get("PORT", 8080)),
     webhook_url=WEBHOOK_URL,
 )
-
-if __name__ == "__main__":
-    main()
