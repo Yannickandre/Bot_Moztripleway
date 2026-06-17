@@ -265,3 +265,5 @@ def main():
     port=int(os.environ.get("PORT", 8080)),
     webhook_url=WEBHOOK_URL,
 )
+if __name__ == "__main__":
+    main()
