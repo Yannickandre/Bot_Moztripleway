@@ -253,7 +253,11 @@ def main():
 
     print('passo 2')
     application = Application.builder().token(TOKEN).build()
+    
     print('passo 3')
+    conv_handler = ConversationHandler(
+        ...
+    )
     application.add_handler(conv_handler)
     application.add_handler(CommandHandler('start', start))
     application.add_handler(CommandHandler('ajuda', ajuda))
