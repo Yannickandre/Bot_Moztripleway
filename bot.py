@@ -260,7 +260,7 @@ def main():
 
     logger.info("Bot iniciado com sucesso.")
    
-   application.run_webhook(
+    application.run_webhook(
     listen="0.0.0.0",
     port=int(os.environ.get("PORT", 8080)),
     webhook_url=WEBHOOK_URL,
