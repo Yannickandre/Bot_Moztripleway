@@ -257,8 +257,27 @@ def main():
     
     print('passo 3')
     conv_handler = ConversationHandler(
-        ...
-    )
+    entry_points=[
+        CallbackQueryHandler(
+            escolher_vpn,
+            pattern='^(http_custom|http_injector|open_tunnel)$'
+        )
+    ],
+    states={
+        ESPERANDO_COMPROVATIVO: [
+            MessageHandler(
+                filters.TEXT & ~filters.COMMAND,
+                receber_texto_usuario
+            )
+        ]
+    },
+    fallbacks=[
+        CallbackQueryHandler(
+            cancelar_operacao,
+            pattern='^cancelar_fluxo$'
+        )
+    ]
+)
     application.add_handler(conv_handler)
     application.add_handler(CommandHandler('start', start))
     application.add_handler(CommandHandler('ajuda', ajuda))
