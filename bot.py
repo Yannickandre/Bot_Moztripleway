@@ -1,5 +1,3 @@
-print("ARQUIVO BOT.PY FOI EXECUTADO")
-1/0
 import os
 import re
 import logging
@@ -7,6 +5,7 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, filters, ContextTypes, ConversationHandler, MessageHandler
 import asyncio
 
+print('Bot iniciado' flush=True)
 # Logs
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -241,7 +240,7 @@ async def interacao_botoes(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # MAIN
 def main():
-    print('passo 1')
+    print('entrou no main', flush=True)
     TOKEN = os.environ.get("MEU_TOKEN_SECRETO")
     WEBHOOK_URL = os.environ.get("WEBHOOK_URL")
 
@@ -273,3 +272,7 @@ def main():
     port=int(os.environ.get("PORT", 8080)),
     webhook_url=WEBHOOK_URL,
 )
+
+if __name__ == "__main__":
+    print("CHAMANDO MAIN", flush=True)
+    main()
