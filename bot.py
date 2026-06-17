@@ -29,13 +29,9 @@ Se encontrares algum erro, <a href='https://t.me/Yannickandre'>Reporte aqui</a>.
         [InlineKeyboardButton('📞 Contato', callback_data='contato')]
     ]
 
-    await query.message.reply_text(
-        texto,
-        reply_markup=InlineKeyboardMarkup(keyboard)
-    )
-
     # Tratar tanto mensagens quanto callback queries
     if update.callback_query:
+        await update.callback_query.answer()
         await update.callback_query.message.reply_text(
             text=texto,
             reply_markup=InlineKeyboardMarkup(keyboard),
@@ -234,6 +230,11 @@ async def cancelar_operacao(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.message.reply_text("Compra cancelada.")
     return ConversationHandler.END
 
+# Voltar ao menu principal
+async def voltar_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await start(update, context)
+    return ConversationHandler.END
+
 # Botões
 async def interacao_botoes(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
@@ -266,27 +267,28 @@ def main():
     
     print('passo 3')
     conv_handler = ConversationHandler(
-    entry_points=[
-        CallbackQueryHandler(
-            escolher_vpn,
-            pattern='^(http_custom|http_injector|open_tunnel)$'
-        )
-    ],
-    states={
-        ESPERANDO_COMPROVATIVO: [
-            MessageHandler(
-                filters.TEXT & ~filters.COMMAND,
-                receber_texto_usuario
+        entry_points=[
+            CallbackQueryHandler(
+                escolher_vpn,
+                pattern='^(http_custom|http_injector|open_tunnel)$'
             )
-        ]
-    },
-    fallbacks=[
-        CallbackQueryHandler(
-            cancelar_operacao,
-            pattern='^cancelar_fluxo$'
-        )
-    ]
-)
+        ],
+        states={
+            ESPERANDO_COMPROVATIVO: [
+                MessageHandler(
+                    filters.TEXT & ~filters.COMMAND,
+                    receber_texto_usuario
+                )
+            ]
+        },
+        fallbacks=[
+            CallbackQueryHandler(
+                cancelar_operacao,
+                pattern='^cancelar_fluxo$'
+            )
+        ],
+        per_message=False
+    )
     application.add_handler(conv_handler)
     
     application.add_handler(CommandHandler('start', start))
@@ -294,20 +296,20 @@ def main():
     application.add_handler(CommandHandler('contato', contato))
     
     application.add_handler(
-    CallbackQueryHandler(voltar_menu, pattern="^voltar_menu$")
-)
+        CallbackQueryHandler(voltar_menu, pattern="^voltar_menu$")
+    )
 
     application.add_handler(
-    CallbackQueryHandler(interacao_botoes, pattern='^(comprar_arquivo|ajuda|contato)$')
-)
+        CallbackQueryHandler(interacao_botoes, pattern='^(comprar_arquivo|ajuda|contato)$')
+    )
 
     logger.info("Bot iniciado com sucesso.")
    
     application.run_webhook(
-    listen="0.0.0.0",
-    port=int(os.environ.get("PORT", 8080)),
-    webhook_url=WEBHOOK_URL,
-)
+        listen="0.0.0.0",
+        port=int(os.environ.get("PORT", 8080)),
+        webhook_url=WEBHOOK_URL,
+    )
 
 if __name__ == "__main__":
     print("CHAMANDO MAIN", flush=True)
