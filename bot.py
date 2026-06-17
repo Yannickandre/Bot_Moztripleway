@@ -29,6 +29,11 @@ Se encontrares algum erro, <a href='https://t.me/Yannickandre'>Reporte aqui</a>.
         [InlineKeyboardButton('📞 Contato', callback_data='contato')]
     ]
 
+    await query.message.reply_text(
+        texto,
+        reply_markup=InlineKeyboardMarkup(keyboard)
+    )
+
     # Tratar tanto mensagens quanto callback queries
     if update.callback_query:
         await update.callback_query.message.reply_text(
@@ -42,9 +47,6 @@ Se encontrares algum erro, <a href='https://t.me/Yannickandre'>Reporte aqui</a>.
             reply_markup=InlineKeyboardMarkup(keyboard),
             parse_mode='HTML'
         )
-
-async def start(update, context):
-    await update.message.reply_text("Estou vivo!")
 
 
 # Comprar arquivo
@@ -182,7 +184,10 @@ Grupos de suporte:
 
         await update.callback_query.message.reply_text(
             texto,
-            parse_mode='HTML'
+            parse_mode='HTML',
+            reply_markup=InlineKeyboardMarkup([
+        [InlineKeyboardButton("🔙 Voltar", callback_data="voltar_menu")]
+    ])
         )
 
     else:
@@ -206,17 +211,21 @@ Essas são as maneiras mais práticas de me contatar, pois eu certamente verei t
 
     if update.callback_query:
         await update.callback_query.answer()
-
         await update.callback_query.message.reply_text(
             texto,
-            parse_mode='HTML'
+            parse_mode='HTML',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton("🔙 Voltar", callback_data="voltar_menu")]
+            ])
         )
-
     else:
         await update.message.reply_text(
             texto,
-            parse_mode='HTML'
-        )
+            parse_mode='HTML',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton("🔙 Voltar", callback_data="voltar_menu")]
+               ])
+          )
 
 # Cancelar
 async def cancelar_operacao(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -279,10 +288,18 @@ def main():
     ]
 )
     application.add_handler(conv_handler)
+    
     application.add_handler(CommandHandler('start', start))
     application.add_handler(CommandHandler('ajuda', ajuda))
     application.add_handler(CommandHandler('contato', contato))
-    application.add_handler(CallbackQueryHandler(interacao_botoes))
+    
+    application.add_handler(
+    CallbackQueryHandler(voltar_menu, pattern="^voltar_menu$")
+)
+
+    application.add_handler(
+    CallbackQueryHandler(interacao_botoes, pattern='^(comprar_arquivo|ajuda|contato)$')
+)
 
     logger.info("Bot iniciado com sucesso.")
    
