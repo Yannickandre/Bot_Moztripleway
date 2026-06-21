@@ -103,8 +103,12 @@ Depois cole aqui a mensagem de confirmação EXACTAMENTE como recebeste.''',
 async def receber_texto_usuario(update: Update, context: ContextTypes.DEFAULT_TYPE):
     texto_de_confirmacao = update.message.text.lower()
     requerimentos = ['27', 'celeste', 'onelta', 'saldo']
+    numeros_validos = ['875868157', '846430884']
 
-    if all(p in texto_de_confirmacao for p in requerimentos) and ("875868157" in requerimentos or "846430884" in requerimentos):
+    if (
+    all(p in texto_de_confirmacao for p in requerimentos)
+    and any(n in texto_de_confirmacao for n in numeros_validos)
+    ):
 
         # Extrair ID da transação
         padrao_codigo = re.search(r'\b[a-z0-9]{10}\b', texto_de_confirmacao)
