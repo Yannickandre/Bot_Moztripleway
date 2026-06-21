@@ -91,7 +91,7 @@ async def escolher_vpn(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await query.message.reply_text(
         text='''\
-Envie o valor para 875868157 ou 846430884 (27 MZN).
+Envie o valor para 875868157 (celeste onelta) ou 846430884(Celeste onelta) [27 MZN].
 
 Depois cole aqui a mensagem de confirmação EXACTAMENTE como recebeste.''',
         reply_markup=InlineKeyboardMarkup(botao_cancelar)
