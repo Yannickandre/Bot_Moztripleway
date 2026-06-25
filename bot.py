@@ -91,7 +91,7 @@ async def escolher_vpn(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await query.message.reply_text(
         text='''\
-Envie o valor para 875868157 (celeste onelta) ou 846430884(Celeste onelta) [27 MZN].
+Envie o valor para 875868157 ou 846430884 (27 MZN).
 
 Depois cole aqui a mensagem de confirmação EXACTAMENTE como recebeste.''',
         reply_markup=InlineKeyboardMarkup(botao_cancelar)
@@ -109,24 +109,6 @@ async def receber_texto_usuario(update: Update, context: ContextTypes.DEFAULT_TY
     all(p in texto_de_confirmacao for p in requerimentos)
     and any(n in texto_de_confirmacao for n in numeros_validos)
     ):
-
-        # Extrair ID da transação
-        padrao_codigo = re.search(r'\b[a-z0-9]{10}\b', texto_de_confirmacao)
-        id_transacao = padrao_codigo.group(0) if padrao_codigo else "".join(texto_de_confirmacao.split())
-
-        FICHEIRO_COMPROVATIVOS = "comprovativos.db"
-
-        # Verificar duplicados
-        if os.path.exists(FICHEIRO_COMPROVATIVOS):
-            with open(FICHEIRO_COMPROVATIVOS, "r") as f:
-                usados = f.read().splitlines()
-                if id_transacao in usados:
-                    await update.message.reply_text("⚠️ Este comprovativo já foi utilizado!")
-                    return ConversationHandler.END
-
-        # Salvar novo comprovativo
-        with open(FICHEIRO_COMPROVATIVOS, "a") as f:
-            f.write(id_transacao + "\n")
 
         # Enviar arquivos
         BASE_DIR = os.path.dirname(os.path.abspath(__file__))
