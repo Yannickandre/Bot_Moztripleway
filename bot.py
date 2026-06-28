@@ -71,7 +71,7 @@ Escolha o VPN desejado:''',
     botoes = [
         [InlineKeyboardButton('HTTP custom', callback_data='http_custom')],
         [InlineKeyboardButton('HTTP injector', callback_data='http_injector')],
-        [InlineKeyboardButton('OpenTunnel', callback_data='open_tunnel')],
+        [InlineKeyboardButton('Hx Tunnel', callback_data='hx_tunnel')],
     ]
 
     await query.message.reply_text(
@@ -122,7 +122,7 @@ async def receber_texto_usuario(update: Update, context: ContextTypes.DEFAULT_TY
         formato = {
             'http_custom': '.hc',
             'http_injector': '.ehi',
-            'open_tunnel': '.tnl'
+            'hx_tunnel': '.hxt'
         }.get(vpn, '.hc')
 
         arquivos_enviados = 0
