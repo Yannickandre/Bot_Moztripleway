@@ -256,7 +256,7 @@ def main():
         entry_points=[
             CallbackQueryHandler(
                 escolher_vpn,
-                pattern='^(http_custom|http_injector|open_tunnel)$'
+                pattern='^(http_custom|http_injector|hx_tunnel)$'
             )
         ],
         states={
