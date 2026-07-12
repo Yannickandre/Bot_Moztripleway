@@ -57,7 +57,7 @@ Muito bem! Chegaste no setor de comprar arquivos.
 Tenho arquivos VIP para:
 • HTTP Custom  
 • HTTP Injector  
-• OpenTunnel  
+• Dark tunnel  
 
 Os arquivos são atualizados todos os sábados, ou seja, se tu comprares no sábado, terá validade de 7 dias, se tu comprares na quinta-feira, terá validade de 2 dias, assim sucessivamente.
 
