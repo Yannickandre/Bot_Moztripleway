@@ -8,7 +8,8 @@ from datetime import datetime, timezone
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     Application, CommandHandler, CallbackQueryHandler, filters,
-    ContextTypes, ConversationHandler, MessageHandler, ApplicationHandlerStop
+    ContextTypes, ConversationHandler, MessageHandler, ApplicationHandlerStop,
+    PicklePersistence
 )
 
 print('Bot iniciado', flush=True)
@@ -23,12 +24,12 @@ ESPERANDO_COMPROVATIVO = 1
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "bot_data.db")
+PERSISTENCE_PATH = os.path.join(BASE_DIR, "conv_state.pkl")
 
 NUMEROS_VALIDOS = ['875868157', '846430884']
 
 # IDs do(s) administrador(es) — só estes IDs podem usar os comandos de gestão.
 # Define via variável de ambiente ADMIN_IDS="123456789,987654321"
-# (podes também colocar um único ID fixo aqui, ex: ADMIN_IDS = {123456789})
 ADMIN_IDS = {
     int(x) for x in os.environ.get("ADMIN_IDS", "").split(",") if x.strip().isdigit()
 }
@@ -156,8 +157,6 @@ def registrar_transacao(transaction_id: str, user_id: int, mensagem: str):
 #  VALIDAÇÃO DO FORMATO DO COMPROVATIVO
 # =========================================================
 
-# Ex: "ID da transacao PP260710.1613.O45888. Transferiste 10.00MT para conta
-#      871572807, nome: EDUARDO FERNANDO MIGUEL as 16:13:36 de 10/07/2026. ..."
 PADRAO_EMOLA = re.compile(
     r"ID da transac[aã]o\s+(?P<id>\S+?)\.\s*"
     r"Transferiste\s+(?P<valor>[\d.,]+)\s*MT\s*para conta\s+(?P<numero>\d+),\s*"
@@ -165,8 +164,6 @@ PADRAO_EMOLA = re.compile(
     re.IGNORECASE
 )
 
-# Ex: "Confirmado DGL5KWOFKXV. Transferiste 25.00MT e a taxa foi de 2.00MT
-#      para 875868157 aos 21/7/26 as 8:43 AM. ..."
 PADRAO_MPESA = re.compile(
     r"Confirmado\s+(?P<id>\S+?)\.\s*"
     r"Transferiste\s+(?P<valor>[\d.,]+)\s*MT\s*e a taxa foi de\s+(?P<taxa>[\d.,]+)\s*MT\s*"
@@ -214,7 +211,6 @@ async def checar_banido(update: Update, context: ContextTypes.DEFAULT_TYPE):
         elif update.message:
             await update.message.reply_text(texto, parse_mode="HTML")
 
-        # Interrompe a propagação — nenhum outro handler corre para este update
         raise ApplicationHandlerStop
 
 
@@ -308,13 +304,11 @@ async def receber_texto_usuario(update: Update, context: ContextTypes.DEFAULT_TY
     user_id = update.effective_user.id
     texto_original = update.message.text
 
-    # 1) O texto tem mesmo o formato de um comprovativo válido?
     dados = analisar_comprovativo(texto_original)
     if not dados:
         await update.message.reply_text("Mensagem inválida. Verifique e tente novamente.")
         return ESPERANDO_COMPROVATIVO
 
-    # 2) O número de destino é um dos teus números?
     if dados["numero"] not in NUMEROS_VALIDOS:
         await update.message.reply_text(
             "O número de destino não corresponde a nenhuma das nossas contas. "
@@ -322,7 +316,6 @@ async def receber_texto_usuario(update: Update, context: ContextTypes.DEFAULT_TY
         )
         return ESPERANDO_COMPROVATIVO
 
-    # 3) Esta transação já foi usada antes? (reutilização = fraude)
     dono_anterior = transacao_ja_usada(dados["id"])
     if dono_anterior is not None:
         banir_usuario(
@@ -336,7 +329,6 @@ async def receber_texto_usuario(update: Update, context: ContextTypes.DEFAULT_TY
         )
         return ConversationHandler.END
 
-    # 4) Tudo certo — regista a transação como usada e envia os arquivos
     registrar_transacao(dados["id"], user_id, texto_original)
 
     pasta = os.path.join(BASE_DIR, "arquivos")
@@ -450,12 +442,26 @@ async def interacao_botoes(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 # =========================================================
+#  FALLBACK — apanha qualquer texto que caia fora de uma conversa ativa
+#  (ex: se o bot reiniciou e perdeu o estado, ou o user demorou muito)
+# =========================================================
+
+async def texto_fora_de_contexto(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.message is None:
+        return
+    await update.message.reply_text(
+        "Não percebi essa mensagem. Se estavas a comprar um arquivo e o processo foi "
+        "interrompido, usa /start para recomeçar a compra."
+    )
+
+
+# =========================================================
 #  COMANDOS DE ADMINISTRAÇÃO (só para quem está em ADMIN_IDS)
 # =========================================================
 
 async def cmd_status(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not eh_admin(update.effective_user.id):
-        return  # ignora silenciosamente — não revela que o comando existe
+        return
 
     banidos = contar_banidos()
     transacoes = contar_transacoes()
@@ -483,7 +489,6 @@ async def cmd_bloqueados(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     texto_completo = f"🚫 <b>Usuários banidos ({len(linhas)}):</b>\n\n" + "\n\n".join(blocos)
 
-    # Telegram limita mensagens a 4096 caracteres — enviamos em pedaços se necessário
     LIMITE = 3800
     for i in range(0, len(texto_completo), LIMITE):
         await update.message.reply_text(texto_completo[i:i + LIMITE], parse_mode="HTML")
@@ -537,6 +542,7 @@ def main():
     print('entrou no main', flush=True)
     TOKEN = os.environ.get("MEU_TOKEN_SECRETO")
     WEBHOOK_URL = os.environ.get("WEBHOOK_URL")
+    PORT = int(os.environ.get("PORT", "8443"))
 
     if not TOKEN:
         logger.error("Token não encontrado.")
@@ -549,12 +555,22 @@ def main():
     init_db()
 
     print('passo 2')
-    application = Application.builder().token(TOKEN).build()
+
+    # Persistência do estado da conversa — resolve o bug de arquivos não
+    # serem enviados quando o processo reinicia (ex: redeploy no Railway)
+    # enquanto o utilizador estava no meio da compra.
+    persistence = PicklePersistence(filepath=PERSISTENCE_PATH)
+
+    application = (
+        Application.builder()
+        .token(TOKEN)
+        .persistence(persistence)
+        .build()
+    )
 
     print('passo 3')
 
     # Handler global de banimento — corre ANTES de qualquer outro handler.
-    # Se o utilizador estiver banido, para tudo por ali (ApplicationHandlerStop).
     application.add_handler(MessageHandler(filters.ALL, checar_banido), group=-1)
     application.add_handler(CallbackQueryHandler(checar_banido), group=-1)
 
@@ -579,7 +595,9 @@ def main():
                 pattern='^cancelar_fluxo$'
             )
         ],
-        per_message=False
+        per_message=False,
+        name="compra_conversation",
+        persistent=True,
     )
     application.add_handler(conv_handler)
 
@@ -601,15 +619,21 @@ def main():
     application.add_handler(CommandHandler('bloquear', cmd_bloquear))
     application.add_handler(CommandHandler('desbloquear', cmd_desbloquear))
 
-    logger.info("Bot iniciado com sucesso.")
+    # Fallback: qualquer texto solto que não caia em nenhum handler acima
+    # (ex: conversa perdida após reinício) recebe pelo menos uma resposta,
+    # em vez do bot ficar mudo como no bug reportado.
+    application.add_handler(
+        MessageHandler(filters.TEXT & ~filters.COMMAND, texto_fora_de_contexto)
+    )
 
+    print('a iniciar webhook', flush=True)
     application.run_webhook(
         listen="0.0.0.0",
-        port=int(os.environ.get("PORT", 8080)),
-        webhook_url=WEBHOOK_URL,
+        port=PORT,
+        url_path=TOKEN,
+        webhook_url=f"{WEBHOOK_URL}/{TOKEN}"
     )
 
 
 if __name__ == "__main__":
-    print("CHAMANDO MAIN", flush=True)
     main()
